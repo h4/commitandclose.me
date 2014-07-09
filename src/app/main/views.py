@@ -1,10 +1,10 @@
-from datetime import datetime
-from flask import render_template, session, redirect, url_for, g
+from flask import render_template, session, redirect, url_for, request
 from . import main
 from flask.ext.github import GitHub
 
 github = GitHub()
 auth_scopes = 'write:repo_hook'
+
 
 @main.route('/')
 def index():
@@ -72,4 +72,7 @@ def login():
 
 @main.route('/hook', methods=['POST'])
 def hook():
+    payload = request.json
+    commits = payload['commits']
+    print(commits)
     return render_template('hook.html')
