@@ -3,7 +3,7 @@ from . import main
 from flask.ext.github import GitHub
 
 github = GitHub()
-auth_scopes = 'write:repo_hook'
+auth_scopes = 'write:repo_hook,repo'
 
 
 @main.route('/')
@@ -68,6 +68,18 @@ def login():
     if session.get('user_id', None) is None:
         return github.authorize(scope=auth_scopes)
     return redirect(url_for('profile'))
+
+
+@main.route('/profile/issue')
+def issue():
+    issue_data = {
+        "state": "closed"
+    }
+    github.post('repos/h4/commitandclose.me/issues/1/comments', {
+        "body": "Closed via http://commitandclose.me/ by commit SHA"
+    })
+    result = github.post('repos/h4/commitandclose.me/issues/1', issue_data)
+    return str(result)
 
 
 @main.route('/hook', methods=['POST'])
