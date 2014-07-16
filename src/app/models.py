@@ -6,7 +6,7 @@ import datetime
 class User(db.DynamicDocument):
     created_at = db.DateTimeField(default=datetime.datetime.now, required=True)
 
-    username = db.StringField(max_length=255, required=True)
+    username = db.StringField(max_length=255)
     github_access_token = db.StringField(max_length=64, required=True)
 
     def __unicode__(self):
