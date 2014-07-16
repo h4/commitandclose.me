@@ -2,9 +2,10 @@
 {% block title %}CommitAndClose.me{% endblock %}
 
 {% block content %}
+    {% include "app/inc/header.html" %}
 <div class="container">
     <div class="page-header">
-        <h1>Hello, {{ name }}!</h1>
+        <h1>Hello, {{ session.access_token }}!</h1>
     </div>
 </div>
 {% endblock %}

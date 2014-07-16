@@ -8,14 +8,14 @@ auth_scopes = 'write:repo_hook,repo'
 
 @main.route('/')
 def index():
-    return render_template('index.html')
+    return render_template('app/index.html')
 
 
 @main.route('/profile')
 def profile():
     if session.get('user_id', None) is None:
-        return redirect(url_for('login'))
-    return render_template('profile.html')
+        return redirect(url_for('.login'))
+    return render_template('app/profile.html')
 
 
 @main.route('/authorise')
@@ -87,4 +87,4 @@ def hook():
     payload = request.json
     commits = payload['commits']
     print(commits)
-    return render_template('hook.html')
+    return render_template('app/hook.html')
