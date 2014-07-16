@@ -7,7 +7,7 @@ from .views import github
 def before_request():
     g.user = None
     if 'access_token' in session:
-        g.user = User(session['access_token'])
+        g.user = User.objects(github_access_token=session['access_token']).first()
 
 
 @github.access_token_getter

@@ -1,4 +1,5 @@
-from flask import render_template, session, redirect, url_for, request
+from app.models import User
+from flask import g, render_template, session, redirect, url_for, request
 from . import main
 from flask.ext.github import GitHub
 
@@ -8,32 +9,44 @@ auth_scopes = 'write:repo_hook,repo'
 
 @main.route('/')
 def index():
-    return render_template('app/index.html')
+    user = User.objects(github_access_token=session.get('access_token', None)).first()
+    return render_template('app/index.html', user=user)
 
 
 @main.route('/profile')
 def profile():
-    if session.get('user_id', None) is None:
+    if session.get('access_token', None) is None:
         return redirect(url_for('.login'))
-    return render_template('app/profile.html')
+    result = github.get('user')
+    return str(result)
+
+    # return render_template('app/profile.html')
 
 
 @main.route('/authorise')
 @github.authorized_handler
 def authorized(access_token):
-    # next_url = request.args.get('next') or url_for('index')
-    # if access_token is None:
-    #     return redirect(next_url)
+    next_url = request.args.get('next') or url_for('.index')
+    if access_token is None:
+        return redirect(next_url)
 
-    # user = User.query.filter_by(github_access_token=access_token).first()
-    # if user is None:
-    #     user = User(access_token)
+    user = User.objects(github_access_token=access_token).first()
+    if user is None:
+        user = User(github_access_token=access_token)
+        user.save()
+
+    session['access_token'] = access_token
+
+    if user.username is None:
+        g.user = user
+        user_data = github.get('user')
+        user.username = user_data.get('login', None)
+        user.save()
     #     db_session.add(user)
     # user.github_access_token = access_token
     # db_session.commit()
 
     # session['user_id'] = user.id
-    session['access_token'] = access_token
     return redirect(url_for('.index'))
 
 
@@ -68,6 +81,12 @@ def login():
     if session.get('user_id', None) is None:
         return github.authorize(scope=auth_scopes)
     return redirect(url_for('profile'))
+
+
+@main.route('/profile/logout')
+def logout():
+    del session['access_token']
+    return redirect(url_for('.index'))
 
 
 @main.route('/profile/issue')

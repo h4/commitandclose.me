@@ -3,3 +3,4 @@ GitHub-Flask==1.1.1
 Flask-Bootstrap==3.1.1.2
 Flask-Moment==0.3.3
 Flask-Script==2.0.5
+flask-mongoengine==0.7.0
