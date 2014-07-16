@@ -1,8 +1,7 @@
 from app.models import db
-from flask import Flask, render_template
+from flask import Flask
 from flask.ext.bootstrap import Bootstrap
 from flask.ext.moment import Moment
-from flask.ext.mongoengine import MongoEngine
 from app.main.views import github
 from config import config
 from .main import main as main_blueprint

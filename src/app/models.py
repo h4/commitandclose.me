@@ -13,6 +13,5 @@ class User(db.DynamicDocument):
         return self.github_access_token
 
     meta = {
-        'indexes' : ['-created_at', 'facebook_id'],
-        'ordering' : ['-created_at']
+        'indexes': ['-created_at']
     }
