@@ -43,8 +43,9 @@ def index():
 def profile():
     if session.get('access_token', None) is None:
         return redirect(url_for('.login'))
+    orgs = github.get('user/orgs')
     repos = get_all_repos(github)
-    return render_template('app/profile.html', repos=repos)
+    return render_template('app/profile.html', repos=repos, orgs=orgs)
 
 
 @main.route('/authorise')
