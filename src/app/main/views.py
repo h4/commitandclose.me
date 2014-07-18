@@ -1,5 +1,5 @@
 import re
-from app.models import User
+from app.models import User, Hook
 from flask import g, render_template, session, redirect, url_for, request
 from . import main
 from flask.ext.github import GitHub
@@ -45,7 +45,10 @@ def profile():
         return redirect(url_for('.login'))
     orgs = github.get('user/orgs')
     repos = get_all_repos(github)
-    return render_template('app/profile.html', repos=repos, orgs=orgs)
+    hooks = Hook.objects(username='h4')
+    for repo in repos:
+        repo['has_hook'] = any(x.repo_id == repo['id'] for x in hooks)
+    return render_template('app/profile.html', repos=repos, orgs=orgs, hooks=hooks)
 
 
 @main.route('/profile/orgs')
@@ -106,7 +109,12 @@ def add_hook():
         'user': 'h4',
         'repo': 'commitandclose.me',
     }
-    result = github.post('repos/{user}/{repo}/hooks'.format(**endpoint_data), hook_data)
+    try:
+        result = github.post('repos/{user}/{repo}/hooks'.format(**endpoint_data), hook_data)
+        db_hook = Hook(repo_id=21621642, username='h4')
+        db_hook.save()
+    except:
+        return str("failed")
     # result = github.get('repos/h4/commitandclose.me')
     return str(result)
     # return render_template('add_hook.html')

@@ -12,7 +12,13 @@
         </aside>
         <section class="col-md-8">
             {% for repo in repos %}
-                <p>{{ repo.id }} {{ repo.name }}</p>
+                <p>{% if repo.has_hook %}
+                    +
+                    {% else %}
+                    -
+                    {% endif %}
+
+                    {{ repo.id }} {{ repo.name }}</p>
             {% endfor %}
         </section>
     </div>
