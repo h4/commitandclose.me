@@ -88,12 +88,6 @@ def authorized(access_token):
     return redirect(url_for('.index'))
 
 
-@main.route('/profile/repos')
-def repos():
-    result = github.get('user/repos')
-    return str(result)
-
-
 @main.route('/profile/addhook')
 def add_hook():
     hook_data = {
@@ -108,7 +102,11 @@ def add_hook():
             "content_type": "json"
         }
     }
-    result = github.post('repos/h4/commitandclose.me/hooks', hook_data)
+    endpoint_data = {
+        'user': 'h4',
+        'repo': 'commitandclose.me',
+    }
+    result = github.post('repos/{user}/{repo}/hooks'.format(**endpoint_data), hook_data)
     # result = github.get('repos/h4/commitandclose.me')
     return str(result)
     # return render_template('add_hook.html')
