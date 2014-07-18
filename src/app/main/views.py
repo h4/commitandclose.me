@@ -48,6 +48,19 @@ def profile():
     return render_template('app/profile.html', repos=repos, orgs=orgs)
 
 
+@main.route('/profile/orgs')
+def orgs():
+    return redirect(url_for('.profile'))
+
+
+@main.route('/profile/orgs/<org_name>')
+def organization(org_name):
+    orgs = github.get('user/orgs')
+    repos = github.get('orgs/{}/repos'.format(org_name))
+    return render_template('app/organization.html',
+                           orgs=orgs, repos=repos, org_name=org_name)
+
+
 @main.route('/authorise')
 @github.authorized_handler
 def authorized(access_token):

@@ -1,0 +1,28 @@
+{% extends "bootstrap/base.html" %}
+{% block title %}{{ g.user.username }} - CommitAndClose.me{% endblock %}
+
+{% block content %}
+{% include "app/inc/header.html" %}
+<div class="container">
+    <div class="row">
+        <aside class="col-md-4">
+            {% for org in orgs %}
+                {% if org_name == org.login %}
+                    <p><strong>{{ org.id }} {{ org.login }}</strong></p>
+                {% else %}
+                    <p>{{ org.id }} {{ org.login }}</p>
+                {% endif %}
+            {% endfor %}
+        </aside>
+        <section class="col-md-8">
+            <h2>{{ org_name }}</h2>
+            {% for repo in repos %}
+                <p>{{ repo.id }} {{ repo.name }}</p>
+            {% endfor %}
+        </section>
+    </div>
+
+    <div class="page-header">
+    </div>
+</div>
+{% endblock %}
